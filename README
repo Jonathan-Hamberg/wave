@@ -1,0 +1,15 @@
+Compiling on Linux
+	sudo apt install libmesa-dev
+	
+	compile glfw
+		download source code
+		cd source_dir
+		cmake .
+		make
+		sudo make install
+
+	navigate to wave directory
+	mkdir build && cd build
+	cmake .. -G"Unix Makefiles"
+	make
+		
