@@ -1,6 +1,9 @@
 cmake_minimum_required ( VERSION 3.3 )
 project( wave )
 
+
+add_compile_options(-std=c++11)
+
 include_directories ( ${CMAKE_SOURCE_DIR}/src/ )
 
 set ( SOURCE_FILES
@@ -12,15 +15,20 @@ set ( SOURCE_FILES
         src/glad/glad.c
         )
 
-link_directories ( ${CMAKE_SOURCE_DIR}/lib/ )
+add_executable ( wave ${SOURCE_FILES} )
+
+if(WIN32)
+	link_directories ( ${CMAKE_SOURCE_DIR}/lib/ )
+	file( COPY ${CMAKE_SOURCE_DIR}/lib/glfw3.dll DESTINATION ${CMAKE_SOURCE_DIR}/bin/ )
+	target_link_libraries( wave glfw3dll )
+
+else(WIN32)
+	target_link_libraries( wave glfw3 dl X11 Xrandr Xi pthread Xinerama Xcursor )
+endif(WIN32)	
 
 include_directories( ${CMAKE_SOURCE_DIR}/scr/ )
 
-add_executable ( wave ${SOURCE_FILES} )
 
-file( COPY ${CMAKE_SOURCE_DIR}/lib/glfw3.dll
-        DESTINATION ${CMAKE_SOURCE_DIR}/bin/ )
-target_link_libraries( wave glfw3dll )
 
 set_target_properties ( wave PROPERTIES
                                 RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/
