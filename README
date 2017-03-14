@@ -1,15 +1,10 @@
-Compiling on Linux
-	sudo apt install libmesa-dev
+Cmpiling on Linux
+	sudo apt install libmesa-dev libglfw3 libglfw3-dev
 	
-	compile glfw
-		download source code
-		cd source_dir
-		cmake .
-		make
-		sudo make install
 
 	navigate to wave directory
 	mkdir build && cd build
 	cmake .. -G"Unix Makefiles"
 	make
 		
+Use apitrace to debug OpenGL part of the application.

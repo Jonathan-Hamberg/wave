@@ -2719,7 +2719,8 @@ void ImGui::Render()
     g.FrameCountRendered = g.FrameCount;
 
     // Skip render altogether if alpha is 0.0
-    // Note that vertex buffers have been created and are wasted, so it is best practice that you don't create windows in the first place, or consistently respond to Begin() returning false.
+    // Note that vertex buffers have been created and are wasted, so it is best practice that you don't create windows
+    // in the first place, or consistently respond to Begin() returning false.
     if (g.Style.Alpha > 0.0f)
     {
         // Gather windows to render

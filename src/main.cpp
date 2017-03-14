@@ -41,7 +41,9 @@ int main(int argv, char *argc[])
     bool show_test_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImColor(114, 144, 154);
-   
+
+
+
     while (!glfwWindowShouldClose(glfwWindow)) {
         glfwPollEvents();
         ImGui_ImplGlfwGL3_NewFrame();
@@ -80,6 +82,7 @@ int main(int argv, char *argc[])
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
         ImGui::Render();
         glfwSwapBuffers(glfwWindow);
     }

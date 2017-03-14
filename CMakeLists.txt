@@ -1,6 +1,7 @@
 cmake_minimum_required ( VERSION 3.3 )
 project( wave )
 
+find_package(glfw3 3.1 REQUIRED)
 
 add_compile_options(-std=c++11)
 
@@ -23,7 +24,7 @@ if(WIN32)
 	target_link_libraries( wave glfw3dll )
 
 else(WIN32)
-	target_link_libraries( wave glfw3 dl X11 Xrandr Xi pthread Xinerama Xcursor )
+	target_link_libraries( wave ${GLFW3_LIBRARY} dl X11 Xrandr Xi pthread Xinerama Xcursor )
 endif(WIN32)	
 
 include_directories( ${CMAKE_SOURCE_DIR}/scr/ )
