@@ -19,9 +19,9 @@ set ( SOURCE_FILES
 add_executable ( wave ${SOURCE_FILES} )
 
 if(WIN32)
-	link_directories ( wave ${CMAKE_SOURCE_DIR}/lib/ )
 	file( COPY ${CMAKE_SOURCE_DIR}/lib/glfw3.dll DESTINATION ${CMAKE_SOURCE_DIR}/bin/ )
 	target_link_libraries( wave ${CMAKE_SOURCE_DIR}/lib/glfw3dll.lib )
+    target_link_libraries( wave ${CMAKE_SOURCE_DIR}/lib/nfd.lib )
 
 else(WIN32)
 	find_package(glfw3 3.1 REQUIRED)

@@ -3,8 +3,10 @@
 #include <iostream>
 #include <algorithm>
 
-#include "gui.h"
+#include "nfd.h"
 #include "imgui.h"
+
+#include "gui.h"
 
 #include "wav.h"
 
@@ -31,7 +33,14 @@ void gui_main(GLFWwindow *window)
 		{
 			if (ImGui::MenuItem("Open", "CTRL+O"))
 			{
-				waveform = wav("C:\\Users\\jonat\\Downloads\\lvb-sym-5-1.wav");
+				nfdchar_t *out_path = nullptr;
+				nfdresult_t nfd_result = NFD_OpenDialog("wav", nullptr, &out_path);
+
+				if (nfd_result == NFD_OKAY)
+				{
+					waveform = wav(out_path);
+					free(out_path);
+				}
 			}
 
 			ImGui::EndMenu();
