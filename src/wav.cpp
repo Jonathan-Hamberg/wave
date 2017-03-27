@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <cstdint>
 
 #include "wav.h"
 
@@ -125,13 +127,28 @@ double wav::LengthInSec()
 	return NumSamples() / SampleRate();
 }
 
-void wav::GetSamples(float *buffer, uint32_t buffer_size, uint32_t sample_index)
+void wav::GetSamples(float *buffer, uint32_t buffer_size, uint32_t start_index, uint32_t end_index)
 {
+	if (end_index - start_index == 0)
+	{
+		return;
+	}
+
+	if (buffer_size == 0)
+	{
+		return;
+	}
+
 	int16_t *data = (int16_t *)&this->buffer.data()[waveform_offset];
+
+	uint16_t samplesPerPoint = (end_index - start_index) / buffer_size;
+	samplesPerPoint = std::max(uint16_t(1), samplesPerPoint);
+
+	uint32_t start = start_index - start_index % samplesPerPoint;
 
 	for (uint32_t i = 0; i < buffer_size; i++)
 	{
-		buffer[i] = float(data[sample_index + i]) / INT16_MAX;
+		buffer[i] = float(data[start + samplesPerPoint * i]) / INT16_MAX;
 	}
 }
 

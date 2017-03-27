@@ -51,5 +51,5 @@ public:
 	uint16_t SampleDepth();
 	double   LengthInSec();
 
-	void GetSamples(float *buffer, uint32_t buffer_size, uint32_t start_index);
+	void GetSamples(float *buffer, uint32_t buffer_size, uint32_t start_index, uint32_t end_index);
 };
