@@ -1,10 +1,10 @@
-#pragma once
-
 #include <iostream>
 #include <algorithm>
+#include <complex>
 
 #include "nfd.h"
 #include "imgui.h"
+#include "kiss_fft.h"
 
 #include "gui.h"
 
@@ -22,6 +22,10 @@ void gui_main(GLFWwindow *window, std::set<int> keys)
 	static float hzoom_level = 1.0f;						// The horizontal zoom level of the displayed waveform.
 	static bool show_file_open = false;						// Determines if the file open dialog is shown.
 	static bool show_app_about = false;						// Determines if the about screen is shown.
+	const int nfft = 1024;
+	static kiss_fft_cfg fwd = kiss_fft_alloc(nfft, 0, nullptr, nullptr);
+	static std::vector<kiss_fft_cpx> x(nfft);
+	static std::vector<kiss_fft_cpx> fx(nfft);
 
 	// Calculate the delta time and set the last time value in seconds.
 	static double last_time = glfwGetTime();
@@ -71,11 +75,11 @@ void gui_main(GLFWwindow *window, std::set<int> keys)
 	{
 		cursor_begin = cursor_begin + hzoom_level;
 	}
-	if (keys.count(GLFW_KEY_KP_ADD))
+	if (keys.count(GLFW_KEY_UP))
 	{
 		hzoom_level /= 1.5;
 	}
-	if (keys.count(GLFW_KEY_KP_SUBTRACT))
+	if (keys.count(GLFW_KEY_DOWN))
 	{
 		hzoom_level *= 1.5;
 	}
@@ -139,11 +143,34 @@ void gui_main(GLFWwindow *window, std::set<int> keys)
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoCollapse;
 
+	// Load in the data points.
+	static float fft_array[nfft];
+	waveform.GetSamples(fft_array, nfft, icursor_begin, icursor_begin + nfft);
+	for (unsigned i = 0; i < nfft; i++)
+	{
+		x[i].r = fft_array[i];
+		x[i].i = 0.0f;
+	}
+
+	// Perform the fft.
+	kiss_fft(fwd, x.data(), fx.data());
+
+	// Normalize the data.
+	for (unsigned i = 0; i < nfft; i++)
+	{
+		fft_array[i] = sqrt(fx[i].r*fx[i].r + fx[i].i*fx[i].i);
+	}
+
+	float fft_min, fft_max;
+	fft_min = *std::min_element(fft_array, fft_array + nfft);
+	fft_max = *std::max_element(fft_array, fft_array + nfft);
+
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 19.0f));
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 19.0f));
 	if (ImGui::Begin("Waveform", nullptr, window_flags))
 	{
-		ImGui::PlotLines("", wave_data.data(), int(wave_data.size()), 0, nullptr, -1.0f, 1.0f, ImVec2(windowWidth, (windowHeight - 19.0f) / 2.0f));
+		ImGui::PlotLines("", wave_data.data(), int(wave_data.size()), 0, nullptr, -1.0f, 1.0f, ImVec2(windowWidth, (windowHeight - 19.0f) / 2.0f - 8.0));
+		ImGui::PlotLines("", fft_array, nfft/2, 0, nullptr, 0.0f, 5.0f, ImVec2(windowWidth, (windowHeight - 19.0f) / 2.0f - 8.0));
 	}
 	ImGui::End();
 }

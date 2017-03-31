@@ -1,9 +1,8 @@
-#pragma once
-
 #include <fstream>
 #include <iostream>
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 
 #include "wav.h"
 
@@ -135,6 +134,11 @@ void wav::GetSamples(float *buffer, uint32_t buffer_size, uint32_t start_index, 
 	}
 
 	if (buffer_size == 0)
+	{
+		return;
+	}
+
+	if (!is_valid)
 	{
 		return;
 	}
